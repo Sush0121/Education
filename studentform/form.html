@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Registration Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffe8d6, #fcd5ce, #fae1dd);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background-color: #ffffffdd;
+      border-radius: 25px;
+      padding: 35px 30px;
+      width: 90%;
+      max-width: 1000px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 30px;
+      color: #6a040f;
+      margin-bottom: 25px;
+    }
+
+    .form-section {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .preview-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .preview-container img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 15px;
+      border: 2px dashed #6a040f;
+      padding: 5px;
+      display: none;
+      margin-top: 15px;
+    }
+
+    .form-fields {
+      flex: 2;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 500;
+      margin: 12px 0 5px;
+      color: #333;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #ffb703;
+      outline: none;
+      background-color: #fffbe7;
+    }
+
+    .error {
+      color: #d90429;
+      font-size: 14px;
+      margin: 2px 0 10px 4px;
+      display: block;
+    }
+
+    .form-actions {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    button,
+    .login-button {
+      background-color: #2a9d8f;
+      color: white;
+      padding: 14px 28px;
+      font-size: 18px;
+      text-decoration: none;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover,
+    .login-button:hover {
+      background-color: #21867a;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .form-section {
+        flex-direction: column;
+      }
+
+      .preview-container img {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Student Registration Form</h1>
+    <form action="submit.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+      <div class="form-section">
+        <!-- Image Upload -->
+        <div class="preview-container">
+          <label for="photo">Upload Photo</label>
+          <input type="file" id="photo" name="photo" accept="image/*" onchange="previewImage(event)">
+          <img id="imagePreview" alt="Uploaded Image Preview" />
+        </div>
+
+        <!-- Form Fields -->
+        <div class="form-fields">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="fname">
+          <span id="firstnameError" class="error"></span>
+
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="lname">
+          <span id="lastnameError" class="error"></span>
+
+          <label for="sname">School Name</label>
+          <input type="text" id="sname" name="schoolname">
+          <span id="schoolnameError" class="error"></span>
+
+          <label for="standard">Standard</label>
+          <input type="number" id="standard" name="standard" min="1" max="12">
+          <span id="standardError" class="error"></span>
+
+          <label for="section">Section</label>
+          <select id="section" name="section">
+            <option value="">Select</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+          </select>
+          <span id="sectionError" class="error"></span>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+          <span id="emailError" class="error"></span>
+
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" maxlength="10" pattern="\d{10}">
+          <span id="phoneError" class="error"></span>
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" maxlength="20">
+          <span id="passwordError" class="error"></span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Register</button>
+        <a href="login.html" class="login-button" style="margin-left: 10px;">Go to Login</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const image = document.getElementById('imagePreview');
+      if (file) {
+        image.src = URL.createObjectURL(file);
+        image.style.display = 'block';
+      } else {
+        image.src = '';
+        image.style.display = 'none';
+      }
+    }
+
+    function validateForm() {
+      let isValid = true;
+
+      // Clear previous errors
+      const fields = ['firstname', 'lastname', 'schoolname', 'standard', 'email', 'phone', 'password', 'section'];
+      fields.forEach(f => document.getElementById(f + 'Error').textContent = "");
+
+      const fname = document.getElementById("fname").value.trim();
+      const lname = document.getElementById("lname").value.trim();
+      const sname = document.getElementById("sname").value.trim();
+      const standard = document.getElementById("standard").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const section = document.getElementById("section").value;
+
+      if (fname === "") {
+        document.getElementById("firstnameError").textContent = "First name is required!";
+        isValid = false;
+      }
+
+      if (lname === "") {
+        document.getElementById("lastnameError").textContent = "Last name is required!";
+        isValid = false;
+      }
+
+      if (sname === "") {
+        document.getElementById("schoolnameError").textContent = "School name is required!";
+        isValid = false;
+      }
+
+      if (standard === "") {
+        document.getElementById("standardError").textContent = "Standard is required!";
+        isValid = false;
+      }
+
+      if (section === "") {
+        document.getElementById("sectionError").textContent = "Please select a section!";
+        isValid = false;
+      }
+
+      if (email === "") {
+        document.getElementById("emailError").textContent = "Email is required!";
+        isValid = false;
+      }
+
+      if (phone === "") {
+        document.getElementById("phoneError").textContent = "Phone number is required!";
+        isValid = false;
+      } else if (!/^\d{10}$/.test(phone)) {
+        document.getElementById("phoneError").textContent = "Phone number must be exactly 10 digits!";
+        isValid = false;
+      }
+
+      if (password === "") {
+        document.getElementById("passwordError").textContent = "Password is required!";
+        isValid = false;
+      } else if (password.length < 6) {
+        document.getElementById("passwordError").textContent = "Password must be at least 6 characters!";
+        isValid = false;
+      }
+
+      return isValid;
+    }
+  </script>
+</body>
+</html>
